@@ -1,0 +1,21 @@
+@startuml
+Interface codeGeneratorInterface{
++receivetext()
++generateCode()
++storageCode()
++showCompletedCode()
+}
+
+abstract class codeGeneratorAbstract{
+#String PlantumlText;
++codeGeneratorAbstract(PlantumlText)
+}
+
+class codeGenerator{
++codeGenerator(codeGenerator)
++receivetext()
++generateCode()
++storageCode()
++showCompletedCode()
+}
+@enduml

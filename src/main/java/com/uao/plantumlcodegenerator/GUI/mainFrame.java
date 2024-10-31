@@ -3,7 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package com.uao.plantumlcodegenerator.GUI;
-
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author santiago
@@ -26,83 +30,119 @@ public class mainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jFileChooser1 = new javax.swing.JFileChooser();
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        Title = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
+        selectLanguagetext = new javax.swing.JLabel();
+        Java = new javax.swing.JButton();
+        Python = new javax.swing.JButton();
+        selectArchive = new javax.swing.JLabel();
+        selectArchiveButton = new javax.swing.JButton();
+        grabNDropText = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        textAreaDropFIle = new javax.swing.JTextArea();
+        generateCode = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setAlwaysOnTop(true);
         setBackground(new java.awt.Color(255, 255, 255));
-        setPreferredSize(new java.awt.Dimension(300, 500));
+        setPreferredSize(new java.awt.Dimension(400, 550));
+        setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
         jPanel1.setPreferredSize(new java.awt.Dimension(400, 400));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jLabel1.setFont(new java.awt.Font("Noto Sans", 0, 36)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Generador de codigo");
-        jPanel1.add(jLabel1, java.awt.BorderLayout.CENTER);
+        Title.setFont(new java.awt.Font("Noto Sans", 0, 36)); // NOI18N
+        Title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        Title.setText("Generador de código");
+        jPanel1.add(Title, java.awt.BorderLayout.CENTER);
 
         jPanel2.setBackground(new java.awt.Color(204, 204, 204));
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 10));
 
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setAlignmentX(Component.CENTER_ALIGNMENT);
-        jLabel2.setText("Seleccione el lenguaje");
-        jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel2.setName(""); // NOI18N
-        jPanel2.add(jLabel2);
+        selectLanguagetext.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        selectLanguagetext.setText("Seleccione el lenguaje");
+        selectLanguagetext.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        selectLanguagetext.setName(""); // NOI18N
+        jPanel2.add(selectLanguagetext);
 
-        jButton1.setText("Java");
-        jPanel2.add(jButton1);
+        Java.setText("Java");
+        jPanel2.add(Java);
 
-        jButton2.setText("Python");
-        jButton2.setToolTipText("");
-        jPanel2.add(jButton2);
+        Python.setText("Python");
+        Python.setToolTipText("");
+        jPanel2.add(Python);
 
-        jLabel3.setText("Seleccione el archivo ");
-        jLabel3.setAlignmentY(1.0F);
-        jLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jPanel2.add(jLabel3);
+        selectArchive.setText("Seleccione el archivo ");
+        selectArchive.setAlignmentY(1.0F);
+        selectArchive.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jPanel2.add(selectArchive);
 
-        jButton3.setText("Click para seleccionar archivo");
-        jPanel2.add(jButton3);
+        selectArchiveButton.setText("Click para seleccionar archivo");
+        selectArchiveButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                selectArchiveButtonMouseClicked(evt);
+            }
+        });
+        jPanel2.add(selectArchiveButton);
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jTextArea1.setText("Arrastre y suelte el archivo");
-        jScrollPane1.setViewportView(jTextArea1);
+        grabNDropText.setText("Arrastre el archivo abajo");
+        jPanel2.add(grabNDropText);
+
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane1.setName(""); // NOI18N
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(300, 300));
+
+        textAreaDropFIle.setColumns(20);
+        textAreaDropFIle.setRows(5);
+        jScrollPane1.setViewportView(textAreaDropFIle);
 
         jPanel2.add(jScrollPane1);
+
+        generateCode.setText("Generar codigo");
+        generateCode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                generateCodeActionPerformed(evt);
+            }
+        });
+        jPanel2.add(generateCode);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 396, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(12, 12, 12))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 503, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void generateCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateCodeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_generateCodeActionPerformed
+
+    private void selectArchiveButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_selectArchiveButtonMouseClicked
+        if(evt.getSource()==selectArchiveButton){
+            jFileChooser1.showOpenDialog(null);
+            File file = new File(jFileChooser1.getSelectedFile().getAbsolutePath());
+            try {
+                FileReader plantUMLText = new FileReader(file);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(mainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }      
+    }//GEN-LAST:event_selectArchiveButtonMouseClicked
 
     /**
      * @param args the command line arguments
@@ -140,15 +180,18 @@ public class mainFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
+    private javax.swing.JButton Java;
+    private javax.swing.JButton Python;
+    private javax.swing.JLabel Title;
+    private javax.swing.JButton generateCode;
+    private javax.swing.JLabel grabNDropText;
+    private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JLabel selectArchive;
+    private javax.swing.JButton selectArchiveButton;
+    private javax.swing.JLabel selectLanguagetext;
+    private javax.swing.JTextArea textAreaDropFIle;
     // End of variables declaration//GEN-END:variables
 }
