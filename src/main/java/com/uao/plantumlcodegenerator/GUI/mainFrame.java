@@ -3,17 +3,27 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package com.uao.plantumlcodegenerator.GUI;
+import java.awt.Color;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 /**
  *
  * @author santiago
  */
 public class mainFrame extends javax.swing.JFrame {
-
+    boolean languageSelected;
+    private final Color selectedColor = new Color(139, 233, 255);
+    private final Color defaultColor = new Color(238, 238, 238);
+    char dataChar;
+    String line;
+    StringBuilder content = new StringBuilder();
     /**
      * Creates new form mainFrame
      */
@@ -69,10 +79,20 @@ public class mainFrame extends javax.swing.JFrame {
         jPanel2.add(selectLanguagetext);
 
         Java.setText("Java");
+        Java.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JavaMouseClicked(evt);
+            }
+        });
         jPanel2.add(Java);
 
         Python.setText("Python");
         Python.setToolTipText("");
+        Python.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                PythonMouseClicked(evt);
+            }
+        });
         jPanel2.add(Python);
 
         selectArchive.setText("Seleccione el archivo ");
@@ -97,11 +117,17 @@ public class mainFrame extends javax.swing.JFrame {
 
         textAreaDropFIle.setColumns(20);
         textAreaDropFIle.setRows(5);
+        textAreaDropFIle.setDropMode(javax.swing.DropMode.INSERT);
         jScrollPane1.setViewportView(textAreaDropFIle);
 
         jPanel2.add(jScrollPane1);
 
         generateCode.setText("Generar codigo");
+        generateCode.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                generateCodeMouseClicked(evt);
+            }
+        });
         generateCode.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 generateCodeActionPerformed(evt);
@@ -129,21 +155,63 @@ public class mainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void generateCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateCodeActionPerformed
-        // TODO add your handling code here:
+        setPlantumlText();
+        System.out.print(dataChar);
+        System.out.println(content.toString());
     }//GEN-LAST:event_generateCodeActionPerformed
 
+    
+    /**
+     * Create a file atribute to storage the absolute path of the selected file.
+     * Then, create the atribute plantUMLText wich is going to recieve the file method
+     * to read the file.
+     * @param evt 
+     */
     private void selectArchiveButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_selectArchiveButtonMouseClicked
         if(evt.getSource()==selectArchiveButton){
             jFileChooser1.showOpenDialog(null);
             File file = new File(jFileChooser1.getSelectedFile().getAbsolutePath());
             try {
-                FileReader plantUMLText = new FileReader(file);
+                BufferedReader reader = new BufferedReader(new FileReader(file));
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(mainFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }      
+                
+        }        
     }//GEN-LAST:event_selectArchiveButtonMouseClicked
 
+    private void JavaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JavaMouseClicked
+        languageSelected = true;
+        Java.setBackground(selectedColor);  
+        Python.setBackground(defaultColor);
+    }//GEN-LAST:event_JavaMouseClicked
+
+    private void PythonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PythonMouseClicked
+        languageSelected = false;
+        Java.setBackground(defaultColor);  
+        Python.setBackground(selectedColor);
+    }//GEN-LAST:event_PythonMouseClicked
+
+    private void generateCodeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_generateCodeMouseClicked
+       
+    }//GEN-LAST:event_generateCodeMouseClicked
+    private void setPlantumlText(){
+        String inputText = textAreaDropFIle.getText();
+        File file = new File(textAreaDropFIle.getText());
+        if(file.exists() && file.isFile() ){
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            // Lee cada línea y la agrega a content
+            while ((line = reader.readLine()) != null) {
+            content.append(line).append(System.lineSeparator()); // Preserva saltos de línea
+            }
+
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(mainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(mainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }    
+        }else {System.out.println("Texto ingresado: " + inputText);}
+    }
     /**
      * @param args the command line arguments
      */
