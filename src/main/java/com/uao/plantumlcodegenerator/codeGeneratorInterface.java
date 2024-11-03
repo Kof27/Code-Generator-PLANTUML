@@ -9,8 +9,7 @@ package com.uao.plantumlcodegenerator;
  * @author santiago
  */
 public interface codeGeneratorInterface {
-    public void receivetext();
     public void generateCode();
     public void storageCode();
-    public void showCompletedCode();
+    public String returnPathFileCreated();
 }

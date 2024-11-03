@@ -3,7 +3,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package com.uao.plantumlcodegenerator.GUI;
+import com.uao.plantumlcodegenerator.codeGeneratorJava;
 import java.awt.Color;
+import java.awt.HeadlessException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,22 +15,30 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JOptionPane;
+import java.awt.dnd.*;
+import java.awt.datatransfer.*;
+import java.util.List;
 /**
  *
  * @author santiago
  */
 public class mainFrame extends javax.swing.JFrame {
-    boolean languageSelected;
+    private String languageSelected;
     private final Color selectedColor = new Color(139, 233, 255);
     private final Color defaultColor = new Color(238, 238, 238);
-    char dataChar;
-    String line;
-    StringBuilder content = new StringBuilder();
+    private char dataChar;
+    private String line;
+    private StringBuilder plantUMLtext = new StringBuilder();
+    private String reader;
+    byte fileOrText = 2 ; //0 si se subio un archivo, 1 si se escribio o se arrastro, o cualquier otro caracter si no es ninguna de las dos
+    String plantUMLStirng;
     /**
      * Creates new form mainFrame
      */
     public mainFrame() {
         initComponents();
+        enableDragAndDropForTextArea(textAreaDropFIle);
     }
 
     /**
@@ -52,12 +62,13 @@ public class mainFrame extends javax.swing.JFrame {
         grabNDropText = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         textAreaDropFIle = new javax.swing.JTextArea();
+        loadText = new javax.swing.JButton();
         generateCode = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setAlwaysOnTop(true);
         setBackground(new java.awt.Color(255, 255, 255));
-        setPreferredSize(new java.awt.Dimension(400, 550));
+        setPreferredSize(new java.awt.Dimension(400, 430));
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
@@ -113,21 +124,29 @@ public class mainFrame extends javax.swing.JFrame {
 
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setName(""); // NOI18N
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(300, 300));
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(300, 100));
 
         textAreaDropFIle.setColumns(20);
         textAreaDropFIle.setRows(5);
-        textAreaDropFIle.setDropMode(javax.swing.DropMode.INSERT);
+        textAreaDropFIle.setDragEnabled(true);
+        textAreaDropFIle.setPreferredSize(new java.awt.Dimension(390, 84));
         jScrollPane1.setViewportView(textAreaDropFIle);
 
         jPanel2.add(jScrollPane1);
 
-        generateCode.setText("Generar codigo");
-        generateCode.addMouseListener(new java.awt.event.MouseAdapter() {
+        loadText.setText("Cargar texto");
+        loadText.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                generateCodeMouseClicked(evt);
+                loadTextMouseClicked(evt);
             }
         });
+        jPanel2.add(loadText);
+
+        generateCode.setBackground(new java.awt.Color(255, 204, 204));
+        generateCode.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        generateCode.setText("Generar codigo");
+        generateCode.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        generateCode.setPreferredSize(new java.awt.Dimension(380, 30));
         generateCode.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 generateCodeActionPerformed(evt);
@@ -155,9 +174,32 @@ public class mainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void generateCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateCodeActionPerformed
-        setPlantumlText();
-        System.out.print(dataChar);
-        System.out.println(content.toString());
+        plantUMLStirng = plantUMLtext.toString();
+        try {
+            switch (languageSelected) {
+            case "Java":
+                if (fileOrText == 0){
+                    codeGeneratorJava codeGeneratorJava1 = new codeGeneratorJava(plantUMLStirng);
+                    codeGeneratorJava1.generateCode();
+                    JOptionPane.showMessageDialog(null, "Archivo creado en: " + codeGeneratorJava1.returnPathFileCreated());
+          
+                }else if(fileOrText ==1){
+                    codeGeneratorJava codeGeneratorJava1 = new codeGeneratorJava(plantUMLStirng);
+                    codeGeneratorJava1.generateCode();
+                    JOptionPane.showMessageDialog(null, "Archivo creado en: " + codeGeneratorJava1.returnPathFileCreated());
+                }else{
+                    JOptionPane.showMessageDialog(null, "No se a detectado archivo");}
+                break;
+            case "Python":
+                if (fileOrText==0){JOptionPane.showMessageDialog(null, "El usuario selecciono un archivo" + " Lenguaje Python");
+                }else if(fileOrText==1){JOptionPane.showMessageDialog(null, "El usuario escribio el archivo"+ " Lenguaje Python");
+                }else{JOptionPane.showMessageDialog(null, "No se a detectado archivo"+ " Lenguaje python");}
+                break;
+            default:
+                break;
+            }
+        } catch (Exception e) {System.out.print(e);}
+        
     }//GEN-LAST:event_generateCodeActionPerformed
 
     
@@ -169,11 +211,24 @@ public class mainFrame extends javax.swing.JFrame {
      */
     private void selectArchiveButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_selectArchiveButtonMouseClicked
         if(evt.getSource()==selectArchiveButton){
+            fileOrText = 0;
             jFileChooser1.showOpenDialog(null);
             File file = new File(jFileChooser1.getSelectedFile().getAbsolutePath());
             try {
                 BufferedReader reader = new BufferedReader(new FileReader(file));
+                
+                while ((line = reader.readLine()) != null) {
+                plantUMLtext.append(line).append(System.lineSeparator()); // Preserva saltos de línea
+                }
+                textAreaDropFIle.setEnabled(false);
+                textAreaDropFIle.updateUI();
+                selectArchiveButton.setBackground(selectedColor);
+                loadText.setEnabled(false);
+                loadText.repaint();
+                System.out.print(plantUMLtext);
             } catch (FileNotFoundException ex) {
+                Logger.getLogger(mainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
                 Logger.getLogger(mainFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
                 
@@ -181,37 +236,39 @@ public class mainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_selectArchiveButtonMouseClicked
 
     private void JavaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JavaMouseClicked
-        languageSelected = true;
+        languageSelected = "Java";
         Java.setBackground(selectedColor);  
         Python.setBackground(defaultColor);
     }//GEN-LAST:event_JavaMouseClicked
 
     private void PythonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PythonMouseClicked
-        languageSelected = false;
+        languageSelected = "Python";
         Java.setBackground(defaultColor);  
         Python.setBackground(selectedColor);
     }//GEN-LAST:event_PythonMouseClicked
 
-    private void generateCodeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_generateCodeMouseClicked
-       
-    }//GEN-LAST:event_generateCodeMouseClicked
-    private void setPlantumlText(){
-        String inputText = textAreaDropFIle.getText();
-        File file = new File(textAreaDropFIle.getText());
+    private void loadTextMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loadTextMouseClicked
+        File file = new File(textAreaDropFIle.getText().trim());//Obtiene el texto del AreaDropFile
         if(file.exists() && file.isFile() ){
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            fileOrText = 1;
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            selectArchiveButton.setEnabled(false);
+            
             // Lee cada línea y la agrega a content
             while ((line = reader.readLine()) != null) {
-            content.append(line).append(System.lineSeparator()); // Preserva saltos de línea
+            plantUMLtext.append(line).append(System.lineSeparator()); // Preserva saltos de línea
             }
+            /**
+             * captura de excepciones 
+             */
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(mainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(mainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }    
+        }else {JOptionPane.showMessageDialog(null,"Ruta no valida");}
+    }//GEN-LAST:event_loadTextMouseClicked
 
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(mainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(mainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }    
-        }else {System.out.println("Texto ingresado: " + inputText);}
-    }
     /**
      * @param args the command line arguments
      */
@@ -246,7 +303,51 @@ public class mainFrame extends javax.swing.JFrame {
             }
         });
     }
+    
+public void enableDragAndDropForTextArea(JTextArea textArea) {
+    new DropTarget(textArea, new DropTargetListener() {
+        @Override
+        public void dragEnter(DropTargetDragEvent dtde) {
 
+        }
+
+        @Override
+        public void dragOver(DropTargetDragEvent dtde) {
+
+        }
+
+        @Override
+        public void dropActionChanged(DropTargetDragEvent dtde) {
+            
+        }
+
+        @Override
+        public void dragExit(DropTargetEvent dte) {
+           
+        }
+
+        @Override
+        public void drop(DropTargetDropEvent dtde) {
+            try {
+                dtde.acceptDrop(DnDConstants.ACTION_COPY);
+                Transferable transferable = dtde.getTransferable();
+                if (transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                    List<File> droppedFiles = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
+                    for (File file : droppedFiles) {
+                        // Muestra solo la ruta del archivo en el JTextArea
+                        textArea.append(file.getAbsolutePath() + "\n");
+                    }
+                    dtde.dropComplete(true);
+                } else {
+                    dtde.dropComplete(false);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                dtde.dropComplete(false);
+            }
+        }
+    });
+}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Java;
     private javax.swing.JButton Python;
@@ -257,6 +358,7 @@ public class mainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton loadText;
     private javax.swing.JLabel selectArchive;
     private javax.swing.JButton selectArchiveButton;
     private javax.swing.JLabel selectLanguagetext;

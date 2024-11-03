@@ -6,17 +6,11 @@ package com.uao.plantumlcodegenerator;
 
 /**
  *
- * @author santiago
+ * @author marku
  */
-public class codeGenerator extends codeGeneratorAbstract{
-    public codeGenerator(String plantumlText){
-        super(plantumlText);}
+public class codeGeneratorPython extends codeGeneratorAbstract {
 
-    @Override
-    public void receivetext() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
+    public codeGeneratorPython(String plantumlText){super(plantumlText);}
     @Override
     public void generateCode() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -28,9 +22,8 @@ public class codeGenerator extends codeGeneratorAbstract{
     }
 
     @Override
-    public void showCompletedCode() {
+    public String returnPathFileCreated() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-        
     
 }
