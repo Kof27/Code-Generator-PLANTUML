@@ -32,8 +32,8 @@ public class mainFrame extends javax.swing.JFrame {
     private String line;
     private StringBuilder plantUMLtext = new StringBuilder();
     private String reader;
-    byte fileOrText = 2 ; //0 si se subio un archivo, 1 si se escribio o se arrastro, o cualquier otro caracter si no es ninguna de las dos
-    String plantUMLStirng;
+    private byte fileOrText = 2; //0 si se subio un archivo, 1 si se escribio o se arrastro, o cualquier otro caracter si no es ninguna de las dos
+    private String plantUMLStirng;
     /**
      * Creates new form mainFrame
      */
@@ -269,42 +269,8 @@ public class mainFrame extends javax.swing.JFrame {
         }else {JOptionPane.showMessageDialog(null,"Ruta no valida");}
     }//GEN-LAST:event_loadTextMouseClicked
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(mainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(mainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(mainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(mainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new mainFrame().setVisible(true);
-            }
-        });
-    }
     
-public void enableDragAndDropForTextArea(JTextArea textArea) {
+private void enableDragAndDropForTextArea(JTextArea textArea) {
     new DropTarget(textArea, new DropTargetListener() {
         @Override
         public void dragEnter(DropTargetDragEvent dtde) {
@@ -350,7 +316,7 @@ public void enableDragAndDropForTextArea(JTextArea textArea) {
     
     
 }
-public void resetGUI(){
+private void resetGUI(){
     selectArchiveButton.setEnabled(true);
     loadText.setEnabled(true);
     Java.setBackground(defaultColor);
@@ -358,6 +324,9 @@ public void resetGUI(){
     selectArchiveButton.setBackground(defaultColor);
     textAreaDropFIle.setEnabled(true);
     textAreaDropFIle.setText("");
+    plantUMLStirng = "";
+    plantUMLtext.setLength(0);
+    
 }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Java;

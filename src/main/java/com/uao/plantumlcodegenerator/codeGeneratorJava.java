@@ -26,69 +26,73 @@ import java.util.regex.Pattern;
  */
 public class codeGeneratorJava extends codeGeneratorAbstract{
     private final Path fileName = filePath.resolve("generatedCode.java");
-    private final Pattern patternClass = Pattern.compile("(class|interface|abstract)\\s+(\\w+)(\\s*\\{[\\s\\S]*?\\})");
-    private final Pattern patternAttribute = Pattern.compile("([\\+\\-\\#])\\s*(\\w+\\s*<.*?>?|\\w+)\\s+(\\w+);?"); // Captura modificador, tipo y nombre
-    public String newFileName;
+    private final Pattern patternClass = Pattern.compile("(class|interface|abstract|abstract class)\\s+(\\w+)(\\s*\\{[\\s\\S]*?\\})");
+    private final Pattern patternAttribute = Pattern.compile("([\\+\\-\\#])\\s*(\\w+\\s*<.*?>?|\\w+)\\s+(\\w+)\\s*;"); // Captura modificador, tipo y nombre
     private final Pattern patternMethod = Pattern.compile("([\\+\\-\\#])\\s*(\\w+\\s*<.*?>?|\\w+)\\s+(\\w+)\\s*\\((.*?)\\)"); // Captura modificador, tipo de retorno, nombre y parámetros
     String pathFile;
+    public String newFileName;
     public codeGeneratorJava(String plantumlText){
         super(plantumlText);}
 
     @Override
     public void generateCode() {
     String text = plantumlText.trim();
-    this.generatedCode = new StringBuilder();
+        this.generatedCode = new StringBuilder();
 
-    Matcher matcherClass = patternClass.matcher(text);
-    Map<String, List<String>> classDetails = new LinkedHashMap<>();
+        Matcher matcherClass = patternClass.matcher(text);
+        Map<String, List<String>> classDetails = new LinkedHashMap<>();
 
-    while (matcherClass.find()) {
-        String tipo = matcherClass.group(1);
-        String nombreClase = matcherClass.group(2);
-        String cuerpoClase = matcherClass.group(3);
+        while (matcherClass.find()) {
+            String tipo = matcherClass.group(1);
+            String nombreClase = matcherClass.group(2);
+            String cuerpoClase = matcherClass.group(3);
 
-        System.out.println("Clase encontrada: " + tipo + " " + nombreClase);
+            System.out.println("Clase encontrada: " + tipo + " " + nombreClase);
 
-        List<String> detallesClase = new ArrayList<>();
+            List<String> detallesClase = new ArrayList<>();
 
-        // Buscar atributos dentro del cuerpo de la clase
-        Matcher matcherAttribute = patternAttribute.matcher(cuerpoClase);
-        while (matcherAttribute.find()) {
-            String modificador = matcherAttribute.group(1); // Modificador de acceso
-            String tipoDato = matcherAttribute.group(2); // Tipo de dato
-            String nombreAtributo = matcherAttribute.group(3); // Nombre del atributo
-            String mod = modificadorToJava(modificador);
-            detallesClase.add(mod + tipoDato + " " + nombreAtributo + ";");
-            System.out.println("Atributo encontrado: " + modificador + " " + tipoDato + " " + nombreAtributo);
+            // Buscar atributos dentro del cuerpo de la clase
+            Matcher matcherAttribute = patternAttribute.matcher(cuerpoClase);
+            while (matcherAttribute.find()) {
+                String modificador = matcherAttribute.group(1); // Modificador de acceso
+                String tipoDato = matcherAttribute.group(2); // Tipo de dato
+                String nombreAtributo = matcherAttribute.group(3); // Nombre del atributo
+                String mod = modificadorToJava(modificador);
+                detallesClase.add(mod + tipoDato + " " + nombreAtributo + ";");
+                System.out.println("Atributo encontrado: " + modificador + " " + tipoDato + " " + nombreAtributo);
+            }
+
+            // Buscar métodos dentro del cuerpo de la clase
+            Matcher matcherMethod = patternMethod.matcher(cuerpoClase);
+            while (matcherMethod.find()) {
+                String modificador = matcherMethod.group(1); // Modificador de acceso
+                String tipoRetorno = matcherMethod.group(2); // Tipo de retorno
+                String nombreMetodo = matcherMethod.group(3); // Nombre del método
+                String parametros = matcherMethod.group(4); // Parámetros del método
+                String mod = modificadorToJava(modificador);
+                
+               
+                detallesClase.add(mod + tipoRetorno + " " + nombreMetodo + "(" + parametros + ") {}");
+                System.out.println("Método encontrado: " + modificador + " " + tipoRetorno + " " + nombreMetodo + "(" + parametros + ")");
+                
+            }
+
+            classDetails.put(nombreClase, detallesClase);
         }
 
-        // Buscar métodos dentro del cuerpo de la clase
-        Matcher matcherMethod = patternMethod.matcher(cuerpoClase);
-        while (matcherMethod.find()) {
-            String modificador = matcherMethod.group(1); // Modificador de acceso
-            String tipoRetorno = matcherMethod.group(2); // Tipo de retorno
-            String nombreMetodo = matcherMethod.group(3); // Nombre del método
-            String parametros = matcherMethod.group(4); // Parámetros del método
-            String mod = modificadorToJava(modificador);
-            detallesClase.add(mod + tipoRetorno + " " + nombreMetodo + "(" + parametros + ") {}");
-            System.out.println("Método encontrado: " + modificador + " " + tipoRetorno + " " + nombreMetodo + "(" + parametros + ")");
+        for (Map.Entry<String, List<String>> entry : classDetails.entrySet()) {
+            String nombreClase = entry.getKey();
+            List<String> detalles = entry.getValue();
+
+            generatedCode.append("public class ").append(nombreClase).append(" {\n");
+            for (String detalle : detalles) {
+                generatedCode.append("    ").append(detalle).append("\n");
+            }
+            generatedCode.append("}\n\n");
         }
 
-        classDetails.put(nombreClase, detallesClase);
-    }
-
-    for (Map.Entry<String, List<String>> entry : classDetails.entrySet()) {
-        String nombreClase = entry.getKey();
-        List<String> detalles = entry.getValue();
-
-        generatedCode.append("public class ").append(nombreClase).append(" {\n");
-        for (String detalle : detalles) {
-            generatedCode.append("    ").append(detalle).append("\n");
-        }
-        generatedCode.append("}\n\n");
-    }
-
-    storageCode();
+        storageCode();
+    
 }
 
     @Override

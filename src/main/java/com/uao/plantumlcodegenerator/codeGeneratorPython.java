@@ -17,8 +17,8 @@ import java.util.regex.Pattern;
 
 public class codeGeneratorPython extends codeGeneratorAbstract {
     private final Path fileName = filePath.resolve("generatedCode.py");
-    private final Pattern patternClass = Pattern.compile("(class|interface|abstract)\\s+(\\w+)(\\s*\\{[\\s\\S]*?\\})");
-    private final Pattern patternAttribute = Pattern.compile("([\\+\\-\\#])\\s*(\\w+\\s*<.*?>?|\\w+)\\s+(\\w+);?");
+    private final Pattern patternClass = Pattern.compile("(class|interface|abstract|abstract class)\\s+(\\w+)(\\s*\\{[\\s\\S]*?\\})");
+    private final Pattern patternAttribute = Pattern.compile("([\\+\\-\\#])\\s*(\\w+\\s*<.*?>?|\\w+)\\s+(\\w+)\\s*;");
     private final Pattern patternMethod = Pattern.compile("([\\+\\-\\#])\\s*(\\w+\\s*<.*?>?|\\w+)\\s+(\\w+)\\s*\\((.*?)\\)");
     private String pathFile;
 
