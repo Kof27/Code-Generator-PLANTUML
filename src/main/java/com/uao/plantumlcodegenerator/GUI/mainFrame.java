@@ -4,6 +4,7 @@
  */
 package com.uao.plantumlcodegenerator.GUI;
 import com.uao.plantumlcodegenerator.codeGeneratorJava;
+import com.uao.plantumlcodegenerator.codeGeneratorPython;
 import java.awt.Color;
 import java.awt.HeadlessException;
 import java.io.BufferedReader;
@@ -142,7 +143,6 @@ public class mainFrame extends javax.swing.JFrame {
         });
         jPanel2.add(loadText);
 
-        generateCode.setBackground(new java.awt.Color(255, 204, 204));
         generateCode.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         generateCode.setText("Generar codigo");
         generateCode.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -178,12 +178,7 @@ public class mainFrame extends javax.swing.JFrame {
         try {
             switch (languageSelected) {
             case "Java":
-                if (fileOrText == 0){
-                    codeGeneratorJava codeGeneratorJava1 = new codeGeneratorJava(plantUMLStirng);
-                    codeGeneratorJava1.generateCode();
-                    JOptionPane.showMessageDialog(null, "Archivo creado en: " + codeGeneratorJava1.returnPathFileCreated());
-          
-                }else if(fileOrText ==1){
+                if (fileOrText == 0 || fileOrText ==1 ){
                     codeGeneratorJava codeGeneratorJava1 = new codeGeneratorJava(plantUMLStirng);
                     codeGeneratorJava1.generateCode();
                     JOptionPane.showMessageDialog(null, "Archivo creado en: " + codeGeneratorJava1.returnPathFileCreated());
@@ -191,15 +186,17 @@ public class mainFrame extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, "No se a detectado archivo");}
                 break;
             case "Python":
-                if (fileOrText==0){JOptionPane.showMessageDialog(null, "El usuario selecciono un archivo" + " Lenguaje Python");
-                }else if(fileOrText==1){JOptionPane.showMessageDialog(null, "El usuario escribio el archivo"+ " Lenguaje Python");
-                }else{JOptionPane.showMessageDialog(null, "No se a detectado archivo"+ " Lenguaje python");}
-                break;
-            default:
+                if (fileOrText==0 || fileOrText==1){
+                    codeGeneratorPython codeGeneratorPython1 = new codeGeneratorPython(plantUMLStirng);
+                    codeGeneratorPython1.generateCode();
+                    JOptionPane.showMessageDialog(null,"Archivo creado en: " + codeGeneratorPython1.returnPathFileCreated());
+                }else{
+                    JOptionPane.showMessageDialog(null, "No se a detectado archivo");}
                 break;
             }
-        } catch (Exception e) {System.out.print(e);}
+        } catch (Exception e) {JOptionPane.showMessageDialog(null,"No se a elegido un lenguaje");}
         
+        resetGUI();
     }//GEN-LAST:event_generateCodeActionPerformed
 
     
@@ -209,9 +206,11 @@ public class mainFrame extends javax.swing.JFrame {
      * to read the file.
      * @param evt 
      */
+    
     private void selectArchiveButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_selectArchiveButtonMouseClicked
         if(evt.getSource()==selectArchiveButton){
             fileOrText = 0;
+            
             jFileChooser1.showOpenDialog(null);
             File file = new File(jFileChooser1.getSelectedFile().getAbsolutePath());
             try {
@@ -223,7 +222,7 @@ public class mainFrame extends javax.swing.JFrame {
                 textAreaDropFIle.setEnabled(false);
                 textAreaDropFIle.updateUI();
                 selectArchiveButton.setBackground(selectedColor);
-                loadText.setEnabled(false);
+                loadText.setEnabled(false); 
                 loadText.repaint();
                 System.out.print(plantUMLtext);
             } catch (FileNotFoundException ex) {
@@ -253,6 +252,7 @@ public class mainFrame extends javax.swing.JFrame {
             fileOrText = 1;
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             selectArchiveButton.setEnabled(false);
+            
             
             // Lee cada línea y la agrega a content
             while ((line = reader.readLine()) != null) {
@@ -347,6 +347,17 @@ public void enableDragAndDropForTextArea(JTextArea textArea) {
             }
         }
     });
+    
+    
+}
+public void resetGUI(){
+    selectArchiveButton.setEnabled(true);
+    loadText.setEnabled(true);
+    Java.setBackground(defaultColor);
+    Python.setBackground(defaultColor);
+    selectArchiveButton.setBackground(defaultColor);
+    textAreaDropFIle.setEnabled(true);
+    textAreaDropFIle.setText("");
 }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Java;

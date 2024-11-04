@@ -23,4 +23,10 @@ public abstract class codeGeneratorAbstract implements codeGeneratorInterface {
     
     public codeGeneratorAbstract(String plantumlText){
     this.plantumlText = plantumlText;}
+    
+    public String returnPathFileCreated(){
+        return filePath.toString();
+    }
 }
+
+

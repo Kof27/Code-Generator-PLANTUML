@@ -91,7 +91,6 @@ public class codeGeneratorJava extends codeGeneratorAbstract{
     storageCode();
 }
 
-
     @Override
     public void storageCode() {
     try {
@@ -122,11 +121,6 @@ public class codeGeneratorJava extends codeGeneratorAbstract{
     }
 }
     
-    @Override
-    public String returnPathFileCreated(){
-        
-        return filePath.toString();
-    }
         
     private static String modificadorToJava(String modificador) {
         switch (modificador) {
@@ -139,5 +133,5 @@ public class codeGeneratorJava extends codeGeneratorAbstract{
             default:
                 return "";
         }
-    }
+    }   
 }
